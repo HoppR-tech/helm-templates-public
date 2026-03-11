@@ -1,0 +1,105 @@
+{{- range $key, $config := (.Values).datadogMonitors }}
+---
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ $key | quote }}
+  labels:
+    app.kubernetes.io/name: datadog-monitors
+    app.kubernetes.io/instance: {{ $key | quote }}
+spec:
+  name: "[{{ $.Values.global.env | upper }}][{{ $.Release.Namespace | upper }}] {{ $config.displayName }}"
+  type: {{ $config.type | quote }}
+  query: {{ $config.query | quote }}
+  message: {{ $config.message | quote }}
+  {{- if $config.tags }}
+  tags:
+    {{- range $config.tags }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+  priority: {{ $config.priority | default 1 }}
+  options:
+    {{- if $config.options.enableLogsSample }}
+    enableLogsSample: {{ $config.options.enableLogsSample }}
+    {{- end }}
+    {{- if $config.options.escalationMessage }}
+    escalationMessage: {{ $config.options.escalationMessage | quote }}
+    {{- end }}
+    {{- if $config.options.evaluationDelay }}
+    evaluationDelay: {{ $config.options.evaluationDelay }}
+    {{- end }}
+    {{- if $config.options.groupbySimpleMonitor }}
+    groupbySimpleMonitor: {{ $config.options.groupbySimpleMonitor }}
+    {{- end }}
+    includeTags: {{ $config.options.includeTags | default true }}
+    {{- if $config.options.newGroupDelay }}
+    newGroupDelay: {{ $config.options.newGroupDelay }}
+    {{- end }}
+    {{- if $config.options.noDataTimeframe }}
+    noDataTimeframe: {{ $config.options.noDataTimeframe }}
+    {{- end }}
+    {{- if $config.options.notificationPresetName }}
+    notificationPresetName: {{ $config.options.notificationPresetName | quote }}
+    {{- end }}
+    notifyAudit: {{ $config.options.notifyAudit | default true }}
+    {{- if $config.options.notifyBy }}
+    notifyBy:
+      {{- range $config.options.notifyBy }}
+      - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+    {{- if $config.options.onMissingData }}
+    onMissingData: {{ $config.options.onMissingData | quote }}
+    {{- end }}
+    {{- if $config.options.renotifyInterval }}
+    renotifyInterval: {{ $config.options.renotifyInterval }}
+    {{- end }}
+    {{- if $config.options.renotifyOccurrences }}
+    renotifyOccurrences: {{ $config.options.renotifyOccurrences }}
+    {{- end }}
+    {{- if $config.options.renotifyStatuses }}
+    renotifyStatuses:
+      {{- range $config.options.renotifyStatuses }}
+      - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+    requireFullWindow: {{ $config.options.requireFullWindow | default true }}
+    {{- if $config.options.thresholdWindows }}
+    thresholdWindows:
+      {{- if $config.options.thresholdWindows.recoveryWindow }}
+      recoveryWindow: {{ $config.options.thresholdWindows.recoveryWindow | quote }}
+      {{- end }}
+      {{- if $config.options.thresholdWindows.triggerWindow }}
+      triggerWindow: {{ $config.options.thresholdWindows.triggerWindow | quote }}
+      {{- end }}
+    {{- end }}
+    thresholds:
+      {{- if $config.options.thresholds.critical }}
+      critical: {{ $config.options.thresholds.critical | quote }}
+      {{- end }}
+      {{- if $config.options.thresholds.criticalRecovery }}
+      criticalRecovery: {{ $config.options.thresholds.criticalRecovery | quote }}
+      {{- end }}
+      {{- if $config.options.thresholds.ok }}
+      ok: {{ $config.options.thresholds.ok | quote }}
+      {{- end }}
+      {{- if $config.options.thresholds.unknown }}
+      unknown: {{ $config.options.thresholds.unknown | quote }}
+      {{- end }}
+      {{- if $config.options.thresholds.warning }}
+      warning: {{ $config.options.thresholds.warning | quote }}
+      {{- end }}
+      {{- if $config.options.thresholds.warningRecovery }}
+      warningRecovery: {{ $config.options.thresholds.warningRecovery | quote }}
+      {{- end }}
+    {{- if $config.options.timeoutH }}
+    timeoutH: {{ $config.options.timeoutH }}
+    {{- end }}
+  {{- if $config.restrictedRoles }}
+  restrictedRoles:
+    {{- range $config.restrictedRoles }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}
