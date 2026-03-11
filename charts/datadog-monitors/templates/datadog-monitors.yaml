@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: datadog-monitors
     app.kubernetes.io/instance: {{ $key | quote }}
 spec:
-  name: "[{{ $.Values.global.env | upper }}][{{ $.Release.Namespace | upper }}] {{ $config.displayName }}"
+  name: "{{ $config.displayName }}"
   type: {{ $config.type | quote }}
   query: {{ $config.query | quote }}
   message: {{ $config.message | quote }}
