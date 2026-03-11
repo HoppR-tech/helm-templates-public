@@ -1,0 +1,22 @@
+datadogMonitors:
+  zeus-nodes-unschedulable:
+     displayName: 'Kubernetes Nodes Unschedulable on cluster {{kube_cluster_name.name}}'
+     type: query alert
+     query: max(last_15m):default_zero(sum:kubernetes_state.node.status{status:schedulable, env:prod} by {kube_cluster_name} * 100 / sum:kubernetes_state.node.status{env:prod} by {kube_cluster_name}) < 80
+     message: "{{#is_alert}}[Prod Alert] 🚨 More than 20% of nodes are unschedulable on ({{kube_cluster_name.name}} cluster). \nThis may not be an issue, you may just need to cleanup old node resources in AWS that have been cordoned\n- Environment: {{env.name}} \n{{/is_alert}}\n\n{{#is_recovery}}Nodes have recovered and are schedulable on cluster {{kube_cluster_name.name}}.{{/is_recovery}}\n\nNotify: @slack-alerts-prod"
+     tags:
+       - integration:kubernetes
+       - severity:critical
+       - env:prod
+       - team:yout-team
+     options:
+       thresholds:
+         critical: 80
+         criticalRecovery: 100
+       notifyAudit: true
+       includeTags: true
+       renotifyInterval: 0
+       requireFullWindow: true
+       onMissingData: default
+       newGroupDelay: 300
+     priority: 1
