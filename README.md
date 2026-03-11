@@ -58,6 +58,13 @@ kubectl get crd datadogmonitors.datadoghq.com
 ```
 
 # Installation
+Test the chart:
+
+```bash
+cd charts/datadog-monitors/
+helm template my-release ./ -f values-example.yaml
+```
+
 Install the chart:
 ```bash
 helm install datadog-monitors ./charts/datadog-monitors \
@@ -74,7 +81,7 @@ Monitors are defined in the `values.yaml` file.
 
 Example:
 ```yaml
-datadog_monitors:
+datadogMonitors:
   high-cpu-usage-by-node:
     type: "query alert"
     query: "avg(last_15m):avg:kubernetes.cpu.usage.total{*} by {node} > 0.85"
@@ -82,7 +89,7 @@ datadog_monitors:
 
     tags:
       - "severity:critical"
-      - "team:platform"
+      - "team:your-team"
 
     priority: 1
 
@@ -99,7 +106,7 @@ datadog_monitors:
       noDataTimeframe: 30
       renotifyInterval: 10
 ```
-Each item in `datadog_monitors` generates a corresponding **DatadogMonitor resource**.
+Each item in `datadogMonitors` generates a corresponding **DatadogMonitor resource**.
 
 # Example GitOps Workflow
 
