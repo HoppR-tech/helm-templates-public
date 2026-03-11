@@ -1,5 +1,5 @@
 datadogMonitors:
-  zeus-nodes-unschedulable:
+  nodes-unschedulable:
      displayName: 'Kubernetes Nodes Unschedulable on cluster {{kube_cluster_name.name}}'
      type: query alert
      query: max(last_15m):default_zero(sum:kubernetes_state.node.status{status:schedulable, env:prod} by {kube_cluster_name} * 100 / sum:kubernetes_state.node.status{env:prod} by {kube_cluster_name}) < 80
